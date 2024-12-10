@@ -237,7 +237,6 @@ const MessagingSystem = () => {
 };
 
 export default MessagingSystem;
-
 ```
 
-Would you like me to continue with the authentication system next?
+

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Heart, X, MessageCircle } from 'lucide-react';
+import Image from 'next/image';
 
 const MatchCard = ({ match }) => {
   // Providing default props to ensure component can run without required props
@@ -17,11 +18,13 @@ const MatchCard = ({ match }) => {
 
   return (
     <Card className="w-full max-w-sm mx-auto overflow-hidden">
-      <div className="relative">
-        <img
+      <div className="relative h-80">
+        <Image
           src={match.photos[0]}
           alt={match.displayName}
-          className="w-full h-80 object-cover"
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-4">
           <h3 className="text-xl font-bold text-white">
