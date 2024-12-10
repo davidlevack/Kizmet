@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -59,6 +61,12 @@ const MessagingSystem = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  };
+
   return (
     <div className="flex h-screen max-h-screen">
       {/* Conversation List */}
@@ -72,6 +80,13 @@ const MessagingSystem = () => {
             <div
               key={conv.id}
               onClick={() => setActiveConversation(conv)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  setActiveConversation(conv);
+                }
+              }}
               className={`p-4 border-b hover:bg-gray-50 cursor-pointer ${
                 activeConversation.id === conv.id ? 'bg-gray-50' : ''
               }`}
@@ -153,9 +168,9 @@ const MessagingSystem = () => {
           <div className="flex gap-2">
             <Input
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
               placeholder="Type a message..."
-              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+              onKeyDown={handleKeyDown}
               className="flex-1"
             />
             <Button onClick={sendMessage}>
