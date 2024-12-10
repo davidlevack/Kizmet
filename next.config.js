@@ -1,14 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
+    output: 'export',
+    trailingSlash: true,
     images: {
       unoptimized: true,
-      domains: ['via.placeholder.com'],
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'via.placeholder.com'
+        }
+      ]
     },
     experimental: {
-      serverActions: false,
-    },
-    output: 'export',
+      // Remove serverActions if not needed
+      // serverActions: {
+      //   allowedOrigins: ['kizmet.vercel.app']
+      // }
+    }
   }
   
   module.exports = nextConfig
