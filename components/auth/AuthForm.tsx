@@ -1,38 +1,98 @@
-import React, { useState } from 'react';
+"use client";
+
+import React, { useState, FormEvent } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const AuthSystem = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+interface FormData {
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  confirmPassword?: string;
+}
 
-  const handleSignIn = async (e) => {
+const AuthForm = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [formData, setFormData] = useState<FormData>({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    confirmPassword: ''
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     
     try {
       // Sign in logic would go here
-      setIsLoading(false);
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Sign in failed');
+      }
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'Sign in failed');
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSignUp = async (e) => {
+  const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setIsLoading(false);
+      return;
+    }
     
     try {
-      // Sign up logic would go here
-      setIsLoading(false);
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Sign up failed');
+      }
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'Sign up failed');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -49,23 +109,31 @@ const AuthSystem = () => {
           <TabsContent value="signin">
             <form onSubmit={handleSignIn} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="signin-email" className="block text-sm font-medium mb-2">
                   Email
                 </label>
                 <Input
+                  id="signin-email"
+                  name="email"
                   type="email"
                   required
+                  value={formData.email}
+                  onChange={handleInputChange}
                   placeholder="Enter your email"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="signin-password" className="block text-sm font-medium mb-2">
                   Password
                 </label>
                 <Input
+                  id="signin-password"
+                  name="password"
                   type="password"
                   required
+                  value={formData.password}
+                  onChange={handleInputChange}
                   placeholder="Enter your password"
                 />
               </div>
@@ -90,55 +158,75 @@ const AuthSystem = () => {
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label htmlFor="firstName" className="block text-sm font-medium mb-2">
                     First Name
                   </label>
                   <Input
+                    id="firstName"
+                    name="firstName"
                     required
+                    value={formData.firstName}
+                    onChange={handleInputChange}
                     placeholder="First name"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label htmlFor="lastName" className="block text-sm font-medium mb-2">
                     Last Name
                   </label>
                   <Input
+                    id="lastName"
+                    name="lastName"
                     required
+                    value={formData.lastName}
+                    onChange={handleInputChange}
                     placeholder="Last name"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="signup-email" className="block text-sm font-medium mb-2">
                   Email
                 </label>
                 <Input
+                  id="signup-email"
+                  name="email"
                   type="email"
                   required
+                  value={formData.email}
+                  onChange={handleInputChange}
                   placeholder="Enter your email"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="signup-password" className="block text-sm font-medium mb-2">
                   Password
                 </label>
                 <Input
+                  id="signup-password"
+                  name="password"
                   type="password"
                   required
+                  value={formData.password}
+                  onChange={handleInputChange}
                   placeholder="Create a password"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
                   Confirm Password
                 </label>
                 <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
                   type="password"
                   required
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
                   placeholder="Confirm your password"
                 />
               </div>
@@ -164,4 +252,4 @@ const AuthSystem = () => {
   );
 };
 
-export default AuthSystem;
+export default AuthForm;
