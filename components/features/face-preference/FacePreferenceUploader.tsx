@@ -5,6 +5,7 @@ import { Upload } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import Image from 'next/image';
 
 const FacePreferenceUploader: React.FC = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -71,20 +72,22 @@ const FacePreferenceUploader: React.FC = () => {
               htmlFor="preference-upload" 
               className="cursor-pointer w-full h-full flex flex-col items-center justify-center"
             >
-              {previewUrl ? (
-                <img
-                  src={previewUrl}
-                  alt="Preview"
-                  className="max-h-44 rounded object-contain"
-                />
-              ) : (
-                <div className="flex flex-col items-center">
-                  <Upload className="w-8 h-8 text-gray-400" />
-                  <span className="mt-2 text-sm text-gray-500">
-                    Click to upload an image
-                  </span>
+              {previewUrl && (
+                <div className="relative w-full h-64 mb-4">
+                  <Image
+                    src={previewUrl}
+                    alt="Preview"
+                    fill
+                    className="object-cover rounded-lg"
+                  />
                 </div>
               )}
+              <div className="flex flex-col items-center">
+                <Upload className="w-8 h-8 text-gray-400" />
+                <span className="mt-2 text-sm text-gray-500">
+                  Click to upload an image
+                </span>
+              </div>
             </label>
           </div>
           
