@@ -2,11 +2,12 @@
 const nextConfig = {
     reactStrictMode: true,
     images: {
-      domains: ['localhost'],
+      domains: ['via.placeholder.com'],
     },
     experimental: {
       serverActions: true,
     },
+    output: 'standalone',
   }
   
   module.exports = nextConfig
