@@ -18,9 +18,10 @@ interface PersonalityQuizProps {
   onSubmit: (answers: PersonalityAnswers) => void;
 }
 
+type TraitKey = keyof PersonalityAnswers;
+
 const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onSubmit }) => {
   const [answers, setAnswers] = useState<PersonalityAnswers>({
-    // Big Five Personality Traits
     openness: 50,
     conscientiousness: 50,
     extraversion: 50,
@@ -28,17 +29,55 @@ const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onSubmit }) => {
     neuroticism: 50
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(answers);
   };
 
-  const handleSliderChange = (trait: keyof PersonalityAnswers, value: number[]) => {
+  const handleSliderChange = (trait: TraitKey, values: number[]) => {
     setAnswers(prev => ({
       ...prev,
-      [trait]: value[0]
+      [trait]: values[0]
     }));
   };
+
+  const traits: Array<{
+    key: TraitKey;
+    label: string;
+    min: string;
+    max: string;
+  }> = [
+    {
+      key: 'openness',
+      label: 'Openness to Experience',
+      min: 'Traditional',
+      max: 'Open to new experiences'
+    },
+    {
+      key: 'conscientiousness',
+      label: 'Conscientiousness',
+      min: 'Flexible',
+      max: 'Organized'
+    },
+    {
+      key: 'extraversion',
+      label: 'Extraversion',
+      min: 'Introverted',
+      max: 'Extroverted'
+    },
+    {
+      key: 'agreeableness',
+      label: 'Agreeableness',
+      min: 'Direct',
+      max: 'Empathetic'
+    },
+    {
+      key: 'neuroticism',
+      label: 'Emotional Stability',
+      min: 'Calm',
+      max: 'Sensitive'
+    }
+  ];
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -51,23 +90,21 @@ const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onSubmit }) => {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-6">
-            <div className="space-y-2">
-              <label className="font-medium">Openness to Experience</label>
-              <Slider
-                value={[answers.openness]}
-                onValueChange={(value) => handleSliderChange('openness', value)}
-                max={100}
-                step={1}
-              />
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Traditional</span>
-                <span>Open to new experiences</span>
+            {traits.map(trait => (
+              <div className="space-y-2" key={trait.key}>
+                <label className="font-medium">{trait.label}</label>
+                <Slider
+                  value={[answers[trait.key]]}
+                  onValueChange={(values) => handleSliderChange(trait.key, values)}
+                  max={100}
+                  step={1}
+                />
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>{trait.min}</span>
+                  <span>{trait.max}</span>
+                </div>
               </div>
-            </div>
-
-            {/* Repeat for other traits */}
-            {/* ... */}
-
+            ))}
           </div>
 
           <Button type="submit" className="w-full">
