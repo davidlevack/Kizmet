@@ -91,11 +91,11 @@ const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onSubmit }) => {
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-6">
             {traits.map(trait => (
-              <div className="space-y-2" key={trait.key}>
+              <div key={trait.key} className="space-y-2">
                 <label className="font-medium">{trait.label}</label>
                 <Slider
                   value={[answers[trait.key]]}
-                  onValueChange={(values) => handleSliderChange(trait.key, values)}
+                  onValueChange={(values: readonly number[]) => handleSliderChange(trait.key, values as number[])}
                   max={100}
                   step={1}
                 />
