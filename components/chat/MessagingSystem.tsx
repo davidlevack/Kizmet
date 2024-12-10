@@ -22,6 +22,8 @@ interface Conversation {
   messages: Message[];
 }
 
+const AVATAR_PATH = "/placeholder-avatar.jpg";
+
 const MessagingSystem = () => {
   const [message, setMessage] = useState('');
   
@@ -95,7 +97,7 @@ const MessagingSystem = () => {
                 <div className="relative">
                   <div className="relative w-10 h-10">
                     <Image
-                      src="/placeholder-avatar.jpg"
+                      src={AVATAR_PATH}
                       alt={conv.name}
                       fill
                       className="rounded-full object-cover"
@@ -123,7 +125,7 @@ const MessagingSystem = () => {
           <div className="flex items-center gap-4">
             <div className="relative w-10 h-10">
               <Image
-                src="/placeholder-avatar.jpg"
+                src={AVATAR_PATH}
                 alt={activeConversation.name}
                 fill
                 className="rounded-full object-cover"
