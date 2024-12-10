@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
+"use client";
+
+import React, { useState, ChangeEvent } from 'react';
+import { Upload } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Upload } from 'lucide-react';
 
-const FacePreferenceUploader = () => {
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState(null);
+const FacePreferenceUploader: React.FC = () => {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   
-  const handleFileSelect = async (event) => {
-    const file = event.target.files[0];
+  const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
     
     // Preview image
     const reader = new FileReader();
-    reader.onload = (e) => setPreviewUrl(e.target.result);
+    reader.onload = (e) => {
+      if (typeof e.target?.result === 'string') {
+        setPreviewUrl(e.target.result);
+      }
+    };
     reader.readAsDataURL(file);
     
     try {
@@ -37,7 +43,7 @@ const FacePreferenceUploader = () => {
       }
       
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'An error occurred');
       setPreviewUrl(null);
     } finally {
       setUploading(false);
@@ -53,7 +59,6 @@ const FacePreferenceUploader = () => {
         </p>
       
         <div className="flex flex-col items-center gap-4">
-          {/* Upload Area */}
           <div className="w-full h-48 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">
             <input
               type="file"
@@ -62,7 +67,10 @@ const FacePreferenceUploader = () => {
               onChange={handleFileSelect}
               id="preference-upload"
             />
-            <label htmlFor="preference-upload" className="cursor-pointer w-full h-full flex flex-col items-center justify-center">
+            <label 
+              htmlFor="preference-upload" 
+              className="cursor-pointer w-full h-full flex flex-col items-center justify-center"
+            >
               {previewUrl ? (
                 <img
                   src={previewUrl}
@@ -80,14 +88,12 @@ const FacePreferenceUploader = () => {
             </label>
           </div>
           
-          {/* Error Message */}
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
           
-          {/* Upload Button */}
           <Button 
             className="w-full"
             disabled={!previewUrl || uploading}
