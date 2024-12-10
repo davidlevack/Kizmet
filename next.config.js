@@ -6,10 +6,9 @@ const nextConfig = {
       domains: ['via.placeholder.com'],
     },
     experimental: {
-      serverActions: true,
+      serverActions: false,
     },
     output: 'export',
-    distDir: 'dist',
   }
   
   module.exports = nextConfig
