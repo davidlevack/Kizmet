@@ -1,16 +1,41 @@
 // src/utils/matchingAlgorithm.js
 
-const calculatePersonalityCompatibility = (user1, user2) => {
-    // Big Five traits comparison - using inverse distance
-    const traits = ['openness', 'conscientiousness', 'extraversion', 'agreeableness', 'neuroticism'];
-    
-    const personalityScore = traits.reduce((score, trait) => {
-      const diff = Math.abs(user1[trait] - user2[trait]);
-      return score + (100 - diff) / 100;
-    }, 0) / traits.length;
-  
-    return personalityScore;
+interface PersonalityTraits {
+  openness: number;
+  conscientiousness: number;
+  extraversion: number;
+  agreeableness: number;
+  neuroticism: number;
+}
+
+interface User {
+  personalityTraits: PersonalityTraits;
+  interests?: string[];
+  location?: {
+    latitude: number;
+    longitude: number;
   };
+}
+
+const calculatePersonalityCompatibility = (user1: User, user2: User): number => {
+  // Big Five traits comparison - using inverse distance
+  const traits: (keyof PersonalityTraits)[] = ['openness', 'conscientiousness', 'extraversion', 'agreeableness', 'neuroticism'];
+  
+  let totalDifference = 0;
+  let maxPossibleDifference = 100 * traits.length; // Assuming each trait is scored 0-100
+
+  traits.forEach(trait => {
+    const difference = Math.abs(
+      user1.personalityTraits[trait] - user2.personalityTraits[trait]
+    );
+    totalDifference += difference;
+  });
+
+  // Convert to a similarity score (0-1)
+  const similarityScore = 1 - (totalDifference / maxPossibleDifference);
+
+  return similarityScore;
+};
   
   const calculateValueAlignment = (user1, user2) => {
     let valueScore = 0;
