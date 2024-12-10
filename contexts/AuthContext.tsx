@@ -35,13 +35,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      // Check for existing session in localStorage or cookies
       const session = localStorage.getItem('user');
       if (session) {
-        setUser(JSON.parse(session));
+        const parsedSession = JSON.parse(session);
+        // Validate the session structure
+        if (parsedSession && parsedSession.id && parsedSession.email) {
+          setUser(parsedSession);
+        } else {
+          localStorage.removeItem('user');
+        }
       }
     } catch (error) {
       console.error('Auth check failed:', error);
+      localStorage.removeItem('user');
     } finally {
       setLoading(false);
     }
@@ -114,7 +120,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const value = {
+  const contextValue: AuthContextType = {
     user,
     loading,
     signIn,
@@ -124,7 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={contextValue}>
       {!loading && children}
     </AuthContext.Provider>
   );

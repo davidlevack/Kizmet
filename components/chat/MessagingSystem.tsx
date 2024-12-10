@@ -5,10 +5,25 @@ import { Button } from '@/components/ui/button';
 import { Send, Circle } from 'lucide-react';
 import Image from 'next/image';
 
+interface Message {
+  id: number;
+  text: string;
+  isSender: boolean;
+  time: string;
+}
+
+interface Conversation {
+  id: number;
+  name: string;
+  lastMessage: string;
+  isOnline: boolean;
+  messages: Message[];
+}
+
 const MessagingSystem = () => {
   const [message, setMessage] = useState('');
   
-  const [conversations] = useState([
+  const [conversations] = useState<Conversation[]>([
     {
       id: 1,
       name: "Sarah",
@@ -29,10 +44,16 @@ const MessagingSystem = () => {
     }
   ]);
 
-  const [activeConversation, setActiveConversation] = useState(conversations[0]);
+  const [activeConversation, setActiveConversation] = useState<Conversation>(conversations[0]);
 
   const sendMessage = () => {
     if (message.trim()) {
+      const newMessage: Message = {
+        id: Date.now(),
+        text: message,
+        isSender: true,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
       // Handle sending message
       setMessage('');
     }
