@@ -116,4 +116,4 @@ const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onSubmit }) => {
   );
 };
 
-export default PersonalityQuiz;
+export default PersonalityQuiz; 
